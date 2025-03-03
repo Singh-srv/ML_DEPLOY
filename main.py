@@ -44,6 +44,16 @@ model.eval()
 # FastAPI app
 app = FastAPI()
 
+# Allow frontend to communicate with the backend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allow all origins, change it to ["http://127.0.0.1:5500"] for security
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all HTTP methods (POST, GET, etc.)
+    allow_headers=["*"],  # Allow all headers
+)
+
+
 # Function to encode ID numbers
 MAX_LENGTH = 20  # Fixed length
 def encode_id_number(id_number, max_length=MAX_LENGTH):
