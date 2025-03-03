@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware  # 🚀 Fix: Import CORS Middleware
 from pydantic import BaseModel
 import torch
 import joblib
@@ -10,8 +11,8 @@ from typing import List
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Load model and encoders using relative paths
-label_encoder = joblib.load(os.path.join(BASE_DIR,  "LST_label_encoder.pkl"))
-char_to_index = joblib.load(os.path.join(BASE_DIR, "LST_char_to_index_LSTM.pkl" ))
+label_encoder = joblib.load(os.path.join(BASE_DIR, "LST_label_encoder.pkl"))
+char_to_index = joblib.load(os.path.join(BASE_DIR, "LST_char_to_index_LSTM.pkl"))
 
 # Load the model architecture
 class LSTMClassifier(torch.nn.Module):
@@ -44,15 +45,14 @@ model.eval()
 # FastAPI app
 app = FastAPI()
 
-# Allow frontend to communicate with the backend
+# ✅ Fix: Enable CORS for frontend communication
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allow all origins, change it to ["http://127.0.0.1:5500"] for security
+    allow_origins=["*"],  # Allow all origins, update to ["http://127.0.0.1:5500"] for security
     allow_credentials=True,
     allow_methods=["*"],  # Allow all HTTP methods (POST, GET, etc.)
     allow_headers=["*"],  # Allow all headers
 )
-
 
 # Function to encode ID numbers
 MAX_LENGTH = 20  # Fixed length
